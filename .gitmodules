@@ -1,0 +1,3 @@
+[submodule "sdcnet/flownet2_pytorch"]
+	path = sdcnet/flownet2_pytorch
+	url = https://github.com/NVIDIA/flownet2-pytorch
