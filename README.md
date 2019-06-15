@@ -24,7 +24,7 @@ In ECCV 2018.
     # Build Docker Image
     docker build -t nvidia-segmgentation -f Dockerfile .
 
-Our pytorch implementation of Semantic Segmentation using Deeplabv3-Plus to achieve SOTA on cityscapes. <br />
+Our pytorch implementation of Semantic Segmentation using Deeplabv3-Plus, and SDCNet-based label augmentation techniques to achieve SOTA on cityscapes. <br />
 We are working on providing detail report, please bear with us. <br />
 To propose a model or change for inclusion, please submit a pull request.
 
