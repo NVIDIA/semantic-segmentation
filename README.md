@@ -135,7 +135,7 @@ Training results for WideResnet38 and SEResnext50 trained in fp16 on DGX-1 (8-GP
 If you find this implementation useful in your work, please acknowledge it appropriately and cite the paper or code accordingly:
 
 ```
-@InProceedings{semantic_cvpr19,
+@inproceedings{semantic_cvpr19,
   author       = {Yi Zhu*, Karan Sapra*, Fitsum A. Reda, Kevin J. Shih, Shawn Newsam, Andrew Tao, Bryan Catanzaro},
   title        = {Improving Semantic Segmentation via Video Propagation and Label Relaxation},
   booktitle    = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
@@ -144,7 +144,6 @@ If you find this implementation useful in your work, please acknowledge it appro
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
 * indicates equal contribution
-
 @inproceedings{reda2018sdc,
   title={SDC-Net: Video prediction using spatially-displaced convolution},
   author={Reda, Fitsum A and Liu, Guilin and Shih, Kevin J and Kirby, Robert and Barker, Jon and Tarjan, David and Tao, Andrew and Catanzaro, Bryan},
