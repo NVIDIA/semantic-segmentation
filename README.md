@@ -41,7 +41,7 @@ Below are the different base network architectures that are currently provided. 
  - **SEResnext(50)-Stride8** 
  
  We have also support in our code for different model trunks but have not been tested with current repo. 
- - **SEResnext(50)-Stride8** 
+ - **SEResnext(101)-Stride8** 
  - **Resnet(50,101)-Stride8**
  - **Stride-16** 
   
