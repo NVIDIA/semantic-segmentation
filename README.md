@@ -74,13 +74,15 @@ Currently, the code supports
 
 Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
 Model Arch: You can change the architecture name using `--arch`.
-   
+```
 `./train.sh `
-
+```
 ## Inference
 
 Our inference code supports two path pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers.    
-   `./eval.sh <weight_file>`
+ ```
+ ./eval.sh <weight_file_location> <result_save_location>
+ ```
    
 ## Label propagation using Video Prediction 
 ```
