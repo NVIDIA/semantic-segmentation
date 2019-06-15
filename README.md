@@ -50,7 +50,7 @@ We've included pre-trained models. Download checkpoints to a folder `pretrained_
 
 * [pretrained_models/cityscapes_best.pth](https://drive.google.com/file/d/1P4kPaMY-SmQ3yPJQTJ7xMGAB_Su-1zTl/view?usp=sharing)[1071MB]
 * [pretrained_models/camvid_best.pth](https://drive.google.com/file/d/1OzUCbFdXulB2P80Qxm7C3iNTeTP0Mvb_/view?usp=sharing)[1071MB]
-* [pretrained_models/kitti_best.pth"](https://drive.google.com/file/d/1OrTcqH_I3PHFiMlTTZJgBy8l_pladwtg/view?usp=sharing)[1071MB]
+* [pretrained_models/kitti_best.pth](https://drive.google.com/file/d/1OrTcqH_I3PHFiMlTTZJgBy8l_pladwtg/view?usp=sharing)[1071MB]
 * [pretrained_models/sdc_cityscapes_vrec.pth.tar](https://drive.google.com/file/d/1OxnJo2tFEQs3vuY01ibPFjn3cRCo2yWt/view?usp=sharing)[38MB]
 * [pretrained_models/FlowNet2_checkpoint.pth.tar](https://drive.google.com/file/d/1hF8vS6YeHkx3j2pfCeQqqZGwA_PJq_Da/view?usp=sharing)[620MB]
 
@@ -59,7 +59,7 @@ We've included pre-trained models. Download checkpoints to a folder `pretrained_
 
 Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datasets](./datasets). <br />
 
-### Python requirements 
+## Python requirements 
 
 Currently, the code supports 
 * Python 3
@@ -97,7 +97,7 @@ Our inference code supports two path pooling and sliding based eval. The pooling
  ./eval.sh <weight_file_location> <result_save_location>
  ```
    
-## Label propagation using Video Prediction 
+## Label Propagation using Video Prediction 
 ```
 cd ./sdcnet
 bash flownet2_pytorch/install.sh
@@ -143,8 +143,8 @@ If you find this implementation useful in your work, please acknowledge it appro
   year         = {2019},
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
-
 * indicates equal contribution
+
 @inproceedings{reda2018sdc,
   title={SDC-Net: Video prediction using spatially-displaced convolution},
   author={Reda, Fitsum A and Liu, Guilin and Shih, Kevin J and Kirby, Robert and Barker, Jon and Tarjan, David and Tao, Andrew and Catanzaro, Bryan},
