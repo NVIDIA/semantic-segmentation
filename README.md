@@ -144,7 +144,6 @@ If you find this implementation useful in your work, please acknowledge it appro
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
 * indicates equal contribution
-
 ```
 We encourage people to contribute to our code base and provide suggestions, point any issues, or solution using merge request, and we hope this repo is useful.  
 
