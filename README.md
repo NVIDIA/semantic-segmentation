@@ -31,7 +31,7 @@ To propose a model or change for inclusion, please submit a pull request.
 Multiple GPU training is supported, and the code provides examples for training or inference. <br />
 For more help, type <br/>
       
-    python train.py --help
+    python3 scripts/train.py --help
 
 ## Network architectures
 
