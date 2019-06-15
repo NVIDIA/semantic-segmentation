@@ -138,17 +138,6 @@ If you find this implementation useful in your work, please acknowledge it appro
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
 * indicates equal contribution
-```
-
-```
-@misc{semantic-segmentation,
-  author = {Karan Sapra, Fitsum A. Reda, Yi Zhu, Kevin Shih, Andrew Tao, Bryan Catanzaro},
-  title = {semantic-segmentation: improving semantic segmentation via video propagation and label relaxation},
-  year = {2019},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/NVIDIA/semantic-segmentation}}
-}
 
 ```
 We encourage people to contribute to our code base and provide suggestions, point any issues, or solution using merge request, and we hope this repo is useful.  
