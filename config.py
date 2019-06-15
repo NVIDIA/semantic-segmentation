@@ -63,14 +63,18 @@ __C.STRICTBORDERCLASS = None
 
 #Attribute Dictionary for Dataset
 __C.DATASET = AttrDict()
-__C.DATASET.CITYSCAPES_DIR = '/home/dcg-adlr-atao-data.cosmos277/data/Cityscapes'
-__C.DATASET.CITYSCAPES_AUG_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/cityscapes_aug5'
-__C.DATASET.CITYSCAPES_DIR = '/home/adlr.cosmos159/atao/data/Cityscapes'
-__C.DATASET.CITYSCAPES_AUG_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/cityscapes_aug5'
-__C.DATASET.MAPILLARY_DIR = '/home/adlr.cosmos159/atao/data/mapillary/'
-__C.DATASET.KITTI_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/KITTI/'
-__C.DATASET.KITTI_AUG_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/KITTI/'
-__C.DATASET.CAMVID_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/camvid/'
+#Cityscapes Dir Location
+__C.DATASET.CITYSCAPES_DIR = ''
+#SDC Augmented Cityscapes Dir Location
+__C.DATASET.CITYSCAPES_AUG_DIR = ''
+#Mapillary Dataset Dir Location
+__C.DATASET.MAPILLARY_DIR = ''
+#Kitti Dataset Dir Location
+__C.DATASET.KITTI_DIR = ''
+#SDC Augmented Kitti Dataset Dir Location
+__C.DATASET.KITTI_AUG_DIR = ''
+#Camvid Dataset Dir Location
+__C.DATASET.CAMVID_DIR = ''
 #Number of splits to support
 __C.DATASET.CV_SPLITS = 3
 
