@@ -144,6 +144,14 @@ If you find this implementation useful in your work, please acknowledge it appro
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
 * indicates equal contribution
+
+@inproceedings{reda2018sdc,
+  title={SDC-Net: Video prediction using spatially-displaced convolution},
+  author={Reda, Fitsum A and Liu, Guilin and Shih, Kevin J and Kirby, Robert and Barker, Jon and Tarjan, David and Tao, Andrew and Catanzaro, Bryan},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages={718--733},
+  year={2018}
+}
 ```
 We encourage people to contribute to our code base and provide suggestions, point any issues, or solution using merge request, and we hope this repo is useful.  
 
