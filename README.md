@@ -1,7 +1,7 @@
 # Improving Semantic Segmentation via Video Prediction and Label Relaxation
 ### [Project](https://nv-adlr.github.io/publication/2018-Segmentation) | [Paper](https://arxiv.org/pdf/1812.01593.pdf) <br>
 Pytorch implementation of our method for achiving state-of-the-art semantic segmentaiton. We present a video prediction-based methodology to scale up
-training sets by synthesizing new training samples, and propose a novel label relaxation technique to make training objectives robust to label propagation noise. <br><br>
+training sets by synthesizing new training samples, and propose a novel label relaxation technique to make training objectives robust to label propagation noise. <br>
 
 [Improving Semantic Segmentation via Video Propagation and Label Relaxation](https://nv-adlr.github.io/publication/2018-Segmentation) <br />
 Yi Zhu<sup>1*</sup>, Karan Sapra<sup>2*</sup>, [Fitsum A. Reda](https://scholar.google.com/citations?user=quZ_qLYAAAAJ&hl=en)<sup>2</sup>, Kevin J. Shih<sup>2</sup>, Shawn Newsam<sup>1</sup>, Andrew Tao<sup>2</sup>, [Bryan Catanzaro](http://catanzaro.name/)<sup>2</sup>  
