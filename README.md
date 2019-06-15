@@ -143,6 +143,7 @@ If you find this implementation useful in your work, please acknowledge it appro
   year         = {2019},
   url          = {https://nv-adlr.github.io/publication/2018-Segmentation}
 }
+
 * indicates equal contribution
 @inproceedings{reda2018sdc,
   title={SDC-Net: Video prediction using spatially-displaced convolution},
