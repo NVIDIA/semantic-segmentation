@@ -85,8 +85,7 @@ Currently, the code supports
 ## Training 
 
 Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
-Model Arch: You can change the architecture name using `--arch`.
-```
+Model Arch: You can change the architecture name using `--arch` flag available in `scripts/train.py`. 
 ./train.sh
 ```
 ## Inference
@@ -156,9 +155,9 @@ We encourage people to contribute to our code base and provide suggestions, poin
 
 ## Acknowledgments
 
- Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](#https://github.com/Cadene/pretrained-models.pytorch)
+Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](#https://github.com/Cadene/pretrained-models.pytorch)
  
- Our initial models used SyncBN from [Synchronized Batch Norm](https://github.com/zhanghang1989/PyTorch-Encoding) but since then have been ported to [Apex SyncBN](https://github.com/NVIDIA/apex) developed by Jie Jiang.
+Our initial models used SyncBN from [Synchronized Batch Norm](https://github.com/zhanghang1989/PyTorch-Encoding) but since then have been ported to [Apex SyncBN](https://github.com/NVIDIA/apex) developed by Jie Jiang.
 
  We would also like to thank Ming-Yu Liu and Peter Kontschieder.
  
