@@ -86,6 +86,7 @@ Currently, the code supports
 
 Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
 Model Arch: You can change the architecture name using `--arch` flag available in `scripts/train.py`. 
+ ```
 ./train.sh
 ```
 ## Inference
