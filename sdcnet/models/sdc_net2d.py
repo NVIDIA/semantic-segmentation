@@ -181,7 +181,7 @@ class SDCNet2D(nn.Module):
 
         image_prediction = self.warp_bilinear(last_image, flow_prediction)
 
-        if label_image:
+        if label_image is not None:
             label_prediction = self.warp_nn(label_image, flow_prediction)
 
         # calculate losses
@@ -199,7 +199,7 @@ class SDCNet2D(nn.Module):
 
         losses['tot'] = 0.7 * losses['color'] + 0.2 * losses['color_gradient'] + 0.1 * losses['flow_smoothness']
 
-        if label_image:
+        if label_image is not None:
             image_prediction = label_prediction
 
         return losses, image_prediction, target_image
