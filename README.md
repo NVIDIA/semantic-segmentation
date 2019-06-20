@@ -1,5 +1,5 @@
 # Improving Semantic Segmentation via Video Prediction and Label Relaxation
-### [Project](https://nv-adlr.github.io/publication/2018-Segmentation) | [Paper](https://arxiv.org/pdf/1812.01593.pdf) <br> | [Cityscapes Score](https://www.cityscapes-dataset.com/anonymous-results/?id=555fc2b66c6e00b953c72b98b100e396c37274e0788e871a85f1b7b4f4fa130e)
+### [Project](https://nv-adlr.github.io/publication/2018-Segmentation) | [Paper](https://arxiv.org/pdf/1812.01593.pdf) | [Cityscapes Score](https://www.cityscapes-dataset.com/anonymous-results/?id=555fc2b66c6e00b953c72b98b100e396c37274e0788e871a85f1b7b4f4fa130e) <br>
 PyTorch implementation of our CVPR2019 paper on achieving state-of-the-art semantic segmentation using Deeplabv3-Plus like architecture with a WideResnet38 trunk. We present a video prediction-based methodology to scale up
 training sets by synthesizing new training samples and propose a novel label relaxation technique to make training objectives robust to label propagation noise. <br>
 
