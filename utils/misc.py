@@ -106,7 +106,7 @@ def prep_experiment(args, parser):
         save_log('log', args.exp_path, args.date_str, rank=args.local_rank)
         open(os.path.join(args.exp_path, args.date_str + '.txt'), 'w').write(
             str(args) + '\n\n')
-        writer = SummaryWriter(log_dir=args.tb_exp_path, comment=args.tb_tag)
+        writer = SummaryWriter(logdir=args.tb_exp_path, comment=args.tb_tag)
         return writer
     return None
 

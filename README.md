@@ -1,7 +1,6 @@
 # Improving Semantic Segmentation via Video Prediction and Label Relaxation
-### [Project](https://nv-adlr.github.io/publication/2018-Segmentation) | [Paper](https://arxiv.org/pdf/1812.01593.pdf) | [Cityscapes Score](https://www.cityscapes-dataset.com/anonymous-results/?id=555fc2b66c6e00b953c72b98b100e396c37274e0788e871a85f1b7b4f4fa130e) | [Kitti Score](http://www.cvlibs.net/datasets/kitti/eval_semseg_detail.php?benchmark=semantics2015&result=83cac7efbd41b1f2fc095f9bc1168bc548b48885) <br>
-PyTorch implementation of our CVPR2019 paper on achieving state-of-the-art semantic segmentation using Deeplabv3-Plus like architecture with a WideResnet38 trunk. We present a video prediction-based methodology to scale up
-training sets by synthesizing new training samples and propose a novel label relaxation technique to make training objectives robust to label propagation noise. <br>
+### [Project](https://nv-adlr.github.io/publication/2018-Segmentation) | [Paper](https://arxiv.org/pdf/1812.01593.pdf) | [YouTube](https://www.youtube.com/watch?v=aEbXjGZDZSQ)  | [Cityscapes Score](https://www.cityscapes-dataset.com/anonymous-results/?id=555fc2b66c6e00b953c72b98b100e396c37274e0788e871a85f1b7b4f4fa130e) | [Kitti Score](http://www.cvlibs.net/datasets/kitti/eval_semseg_detail.php?benchmark=semantics2015&result=83cac7efbd41b1f2fc095f9bc1168bc548b48885) <br>
+PyTorch implementation of our CVPR2019 paper (oral) on achieving state-of-the-art semantic segmentation results using Deeplabv3-Plus like architecture with a WideResNet38 trunk. We present a video prediction-based methodology to scale up training sets by synthesizing new training samples and propose a novel label relaxation technique to make training objectives robust to label noise. <br>
 
 [Improving Semantic Segmentation via Video Propagation and Label Relaxation](https://nv-adlr.github.io/publication/2018-Segmentation) <br />
 Yi Zhu<sup>1*</sup>, Karan Sapra<sup>2*</sup>, [Fitsum A. Reda](https://scholar.google.com/citations?user=quZ_qLYAAAAJ&hl=en)<sup>2</sup>, Kevin J. Shih<sup>2</sup>, Shawn Newsam<sup>1</sup>, Andrew Tao<sup>2</sup>, [Bryan Catanzaro](http://catanzaro.name/)<sup>2</sup>  
@@ -18,30 +17,51 @@ In ECCV 2018.
 ## Installation 
 
     # Get Semantic Segmentation source code
-    git clone https://github.com/NVIDIA/semantic-segmentation.git
+    git clone --recursive https://github.com/NVIDIA/semantic-segmentation.git
     cd semantic-segmentation
 
     # Build Docker Image
     docker build -t nvidia-segmgentation -f Dockerfile .
 
+If you don't want to use docker, you can manually install the following requirements: 
+
+* An NVIDIA GPU and CUDA 9.0 or higher. Some operations only have gpu implementation.
+* PyTorch (>= 0.5.1)
+* Python 3
+* numpy
+* sklearn
+* h5py
+* scikit-image
+* pillow
+* piexif
+* cffi
+* tqdm
+* dominate
+* tensorboardX
+* opencv-python
+* nose
+* ninja
+
 We are working on providing a detail report, please bear with us. <br />
 To propose a model or change for inclusion, please submit a pull request.
 
-Multiple GPU training is supported, and the code provides examples for training or inference. <br />
+Multiple GPU training and mixed precision training are supported, and the code provides examples for training and inference. <br />
 For more help, type <br/>
       
-    python3 scripts/train.py --help
+    python3 train.py --help
+
+
 
 ## Network architectures
 
-Below are the different base network architectures that are currently provided. <br />
+Below are the different base network architectures (trunk) that are currently provided. <br />
 
- - **WideResnet38**
- - **SEResnext(50)-Stride8** 
+ - **WideResNet38-Stride8**
+ - **SEResNeXt(50)-Stride8** 
  
  We have also support in our code for different model trunks but have not been tested with current repo. 
- - **SEResnext(101)-Stride8** 
- - **Resnet(50,101)-Stride8**
+ - **SEResNeXt(101)-Stride8** 
+ - **ResNet(50,101)-Stride8**
  - **Stride-16** 
   
 ## Pre-trained Models
@@ -58,43 +78,31 @@ We've included pre-trained models. Download checkpoints to a folder `pretrained_
 
 Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datasets](./datasets). <br />
 
-## Python requirements 
 
-Currently, the code supports 
-* Python 3
-* Python Packages
-* numpy 
-    * PyTorch ( == 0.5.1, for <= 0.5.0 )
-    * numpy
-    * sklearn
-    * h5py
-    * scikit-image
-    * pillow
-    * piexif
-    * cffi
-    * tqdm
-    * dominate
-    * tensorboardX
-    * opencv-python
-    * nose
-    * ninja
-* An NVIDIA GPU and CUDA 9.0 or higher. Some operations only have gpu implementation.
  
 # Running the code
 
-## Training 
+## Pre-Training on Mapillary 
 
 Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
-Model Arch: You can change the architecture name using `--arch` flag available in `scripts/train.py`. 
+Model Arch: You can change the architecture name using `--arch` flag available in `train.py`. 
  ```
-./train.sh
+./scripts/train_mapillary.sh
 ```
+
+## Fine-tuning on Cityscapes 
+```
+./scripts/train_cityscapes.sh
+```
+
 ## Inference
 
-Our inference code supports two path pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers.    
+Our inference code supports two ways of evaluation: pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers.    
  ```
- ./eval.sh <weight_file_location> <result_save_location>
+ ./scripts/eval.sh <weight_file_location> <result_save_location>
  ```
+
+# Dataset augmentation
    
 ## Label Propagation using Video Prediction 
 ```
@@ -129,6 +137,7 @@ Training results for WideResnet38 and SEResnext50 trained in fp16 on DGX-1 (8-GP
   </tr>
 </table>
 
+
 ## Reference 
 
 If you find this implementation useful in your work, please acknowledge it appropriately and cite the paper or code accordingly:
@@ -156,11 +165,11 @@ We encourage people to contribute to our code base and provide suggestions, poin
 
 ## Acknowledgments
 
-Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](#https://github.com/Cadene/pretrained-models.pytorch)
+Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](#https://github.com/Cadene/pretrained-models.pytorch).
  
 Our initial models used SyncBN from [Synchronized Batch Norm](https://github.com/zhanghang1989/PyTorch-Encoding) but since then have been ported to [Apex SyncBN](https://github.com/NVIDIA/apex) developed by Jie Jiang.
 
- We would also like to thank Ming-Yu Liu and Peter Kontschieder.
+We would also like to thank Ming-Yu Liu and Peter Kontschieder.
  
 ## Coding Style
 * 4 spaces for indentation rather than tabs

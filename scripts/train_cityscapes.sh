@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
     # Example on Cityscapes
-     python -m torch.distributed.launch --nproc_per_node=8 scripts/train.py --dataset cityscapes \
+     python -m torch.distributed.launch --nproc_per_node=8 train.py --dataset cityscapes \
         --arch network.deepv3.DeepSRNX50V3PlusD_m1 \
         --snapshot ~/nfs-mount/results/best_mapillary_ResNextSE50_50239.pth \
         --gblur \
