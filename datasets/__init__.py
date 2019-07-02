@@ -156,7 +156,7 @@ def setup_loaders(args):
         val_joint_transform_list = [
             joint_transforms.ResizeHeight(eval_size),
             joint_transforms.CenterCropPad(eval_size)]
-        train_set = args.dataset_cls.mapillary(
+        train_set = args.dataset_cls.Mapillary(
             'semantic', 'train',
             joint_transform_list=train_joint_transform_list,
             transform=train_input_transform,
@@ -165,7 +165,7 @@ def setup_loaders(args):
             class_uniform_pct=args.class_uniform_pct,
             class_uniform_tile=args.class_uniform_tile,
             test=args.test_mode)
-        val_set = args.dataset_cls.mapillary(
+        val_set = args.dataset_cls.Mapillary(
             'semantic', 'val',
             joint_transform_list=val_joint_transform_list,
             transform=val_input_transform,

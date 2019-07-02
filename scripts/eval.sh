@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Running inference on" ${1}
 echo "Saving Results :" ${2}
-PYTHONPATH=$PWD:$PYTHONPATH python3 scripts/eval.py \
+PYTHONPATH=$PWD:$PYTHONPATH python3 eval.py \
     --arch network.deepv3.DeepWV3Plus \
     --scales 1.0 \
     --split val \
