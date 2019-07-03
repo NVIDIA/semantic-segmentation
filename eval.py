@@ -524,6 +524,7 @@ def main():
     logging.info("Exp_name: %s", args.exp_name)
     logging.info("Ckpt path: %s", args.ckpt_path)
     logging.info("Scales : %s", ' '.join(str(e) for e in scales))
+    logging.info("Inference mode: %s", args.inference_mode)
 
     # Set up network, loader, inference mode
     metrics = args.dataset != 'video_folder'
