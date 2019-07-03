@@ -23,7 +23,7 @@ In ECCV 2018.
     # Build Docker Image
     docker build -t nvidia-segmgentation -f Dockerfile .
 
-If you don't want to use docker, you can manually install the following requirements: 
+If you prefer not to use docker, you can manually install the following requirements: 
 
 * An NVIDIA GPU and CUDA 9.0 or higher. Some operations only have gpu implementation.
 * PyTorch (>= 0.5.1)
@@ -54,15 +54,8 @@ For more help, type <br/>
 
 ## Network architectures
 
-Below are the different base network architectures (trunk) that are currently provided. <br />
+Our repo now supports DeepLabV3+ architecture with different backbones, including `WideResNet38`, `SEResNeXt(50, 101)` and `ResNet(50,101)`. 
 
- - **WideResNet38-Stride8**
- - **SEResNeXt(50)-Stride8** 
- 
- We have also support in our code for different model trunks but have not been tested with current repo. 
- - **SEResNeXt(101)-Stride8** 
- - **ResNet(50,101)-Stride8**
- - **Stride-16** 
   
 ## Pre-trained Models
 We've included pre-trained models. Download checkpoints to a folder `pretrained_models`. 
@@ -82,34 +75,55 @@ Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datase
  
 # Running the code
 
-## Pre-Training on Mapillary 
-
 Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
 Model Arch: You can change the architecture name using `--arch` flag available in `train.py`. 
+
+## Pre-Training on Mapillary 
+First, you can pre-train a DeepLabV3+ model with `SEResNeXt(50)-Stride8` trunk on Mapillary dataset. Set `__C.DATASET.MAPILLARY_DIR` in `config.py` to where you store the Mapillary data. We use the research edition dataset, which you can request from [here](https://www.mapillary.com/dataset/vistas). 
+
  ```
 ./scripts/train_mapillary.sh
 ```
 
 ## Fine-tuning on Cityscapes 
+Once you have the Mapillary pre-trained model (training mIoU should be 50+), you can start fine-tuning the model on Cityscapes dataset. Set `__C.DATASET.CITYSCAPES_DIR` in `config.py` to where you store the Cityscapes data. Your training mIoU in the end should be 80+. 
 ```
 ./scripts/train_cityscapes.sh
 ```
 
 ## Inference
 
-Our inference code supports two ways of evaluation: pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers.    
+Our inference code supports two ways of evaluation: pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers. We use `sliding` as default. 
  ```
- ./scripts/eval.sh <weight_file_location> <result_save_location>
+ ./scripts/eval_cityscapes.sh <weight_file_location> <result_save_location>
  ```
 
+For submitting to Cityscapes benchmark, we simply change it to multi-scale setting and use WideResNet38 as the trunk. 
+ ```
+ ./scripts/submit_cityscapes.sh <weight_file_location> <result_save_location>
+ ```
+
+In the `result_save_location` you set, you will find several folders: `rgb`, `pred`, `compose` and `diff`. `rgb` contains the color-encode predicted segmentation masks. `pred` contains what you need to submit to the evaluation server, simply zip it and upload. `compose` contains the overlapped images of original video frame and the color-encode predicted segmentation masks. `diff` contains the difference between our prediction and the ground truth. For the test submission, there is nothing in the `diff` folder because we don't have ground truth. 
+
+Right now, our inference code only supports Cityscapes dataset.  
+
 # Dataset augmentation
-   
+
+At this point, you can already achieve top performance on Cityscapes benchmark (83+ mIoU). In order to further boost the segmentation performance, we can use the augmented dataset to help model's generalization capibility. 
+
 ## Label Propagation using Video Prediction 
+First, you need to donwload the Cityscapes sequence dataset. Note that the sequence dataset is very large (a 325GB .zip file). Then we can use video prediction model to propagate GT segmentation masks to adjacent video frames, so that we can have more annotated image-label pairs during training. 
+
 ```
 cd ./sdcnet
+
 bash flownet2_pytorch/install.sh
-./_eval.sh
+
+./_aug.sh
 ```
+
+By default, we predict five past frames and five future frames, which effectively enlarge the dataset 10 times. If you prefer to propagate less or more time steps, you can change the `--propagate` accordingly. Enjoy the augmented dataset. 
+
 
 ## Results on Cityscapes
 
@@ -165,7 +179,7 @@ We encourage people to contribute to our code base and provide suggestions, poin
 
 ## Acknowledgments
 
-Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](#https://github.com/Cadene/pretrained-models.pytorch).
+Parts of the code were heavily derived from [pytorch-semantic-segmentation](https://github.com/ZijunDeng/pytorch-semantic-segmentation), [inplace-abn](https://github.com/mapillary/inplace_abn), [Pytorch](https://github.com/pytorch/vision/blob/master/torchvision/models/resnet.py), [ClementPinard/FlowNetPytorch](https://github.com/ClementPinard/FlowNetPytorch) and [Cadene](https://github.com/Cadene/pretrained-models.pytorch).
  
 Our initial models used SyncBN from [Synchronized Batch Norm](https://github.com/zhanghang1989/PyTorch-Encoding) but since then have been ported to [Apex SyncBN](https://github.com/NVIDIA/apex) developed by Jie Jiang.
 

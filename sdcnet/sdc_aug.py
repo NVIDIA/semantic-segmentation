@@ -317,7 +317,7 @@ if __name__ == '__main__':
 		one_step_augmentation(net, mask_prefix, colormask_prefix, rgb_prefix, sequence_prefix, split, 'color_segmap', False)
 		one_step_augmentation(net, mask_prefix, colormask_prefix, rgb_prefix, sequence_prefix, split, 'color_segmap', True)
 	
-	for i in range(2, args.propagate):
+	for i in range(2, args.propagate+1):
 		# create +-n data
 		multi_step_augmentation(net, mask_prefix, colormask_prefix, rgb_prefix, sequence_prefix, split, 'rgb_image', False, i)
 		multi_step_augmentation(net, mask_prefix, colormask_prefix, rgb_prefix, sequence_prefix, split, 'labelid', False, i)
