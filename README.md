@@ -105,7 +105,7 @@ For submitting to Cityscapes benchmark, we simply change it to multi-scale setti
 
 In the `result_save_location` you set, you will find several folders: `rgb`, `pred`, `compose` and `diff`. `rgb` contains the color-encode predicted segmentation masks. `pred` contains what you need to submit to the evaluation server, simply zip it and upload. `compose` contains the overlapped images of original video frame and the color-encode predicted segmentation masks. `diff` contains the difference between our prediction and the ground truth. For the test submission, there is nothing in the `diff` folder because we don't have ground truth. 
 
-Right now, our evaluation code only supports Cityscapes dataset. And it does not support Apex multi-GPU evaluation, thus the evaluation is slow. For exmaple, multi-scale sliding evaluation on the test set of Cityscapes dataset will take hours to complete. Feel free to contribute a multi-gpu eval supported pull request. 
+Right now, our inference code only supports Cityscapes dataset.  
 
 # Dataset augmentation
 
