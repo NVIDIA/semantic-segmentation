@@ -331,7 +331,6 @@ class SENet(nn.Module):
         self.inplanes = planes * block.expansion
         for index in range(1, blocks):
             layers.append(block(self.inplanes, planes, groups, reduction))
-            # logging.info("Layer %s Assigned", str(index))
 
         return nn.Sequential(*layers)
 
