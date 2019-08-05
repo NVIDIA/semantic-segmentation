@@ -3,9 +3,9 @@
     # Example on Cityscapes
      python -m torch.distributed.launch --nproc_per_node=8 train.py \
         --dataset cityscapes \
-        --cv 0 \
-        --arch network.deepv3.DeepSRNX50V3PlusD_m1 \
-        --snapshot ./pretrained_models/best_epoch_172_mean-iu_0.51015.pth \
+        --cv 2 \
+        --arch network.deepv3.DeepWV3Plus \
+        --snapshot ./pretrained_models/YOUR_TRAINED_MAPILLARY_MODEL \
         --class_uniform_pct 0.5 \
         --class_uniform_tile 1024 \
         --max_cu_epoch 150 \
@@ -31,4 +31,4 @@
         --apex \
         --exp cityscapes_ft \
         --ckpt ./logs/ \
-        --tb_path ./logs/ 
+        --tb_path ./logs/

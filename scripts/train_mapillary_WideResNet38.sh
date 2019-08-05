@@ -3,7 +3,7 @@
     # Example on Mapillary
      python -m torch.distributed.launch --nproc_per_node=8 train.py \
         --dataset mapillary \
-        --arch network.deepv3.DeepSRNX50V3PlusD_m1 \
+        --arch network.deepv3.DeepWV3Plus \
         --class_uniform_pct 0.5 \
         --class_uniform_tile 1024 \
         --syncbn \
@@ -20,7 +20,6 @@
         --img_wt_loss \
         --wt_bound 6.0 \
         --bs_mult 2 \
-        --cv 2 \
         --apex \
         --exp mapillary_pretrain \
         --ckpt ./logs/ \

@@ -45,8 +45,7 @@ If you prefer not to use docker, you can manually install the following requirem
 We are working on providing a detail report, please bear with us. <br />
 To propose a model or change for inclusion, please submit a pull request.
 
-Multiple GPU training and mixed precision training are supported, and the code provides examples for training and inference. <br />
-For more help, type <br/>
+Multiple GPU training and mixed precision training are supported, and the code provides examples for training and inference. For more help, type <br/>
       
     python3 train.py --help
 
@@ -57,59 +56,80 @@ For more help, type <br/>
 Our repo now supports DeepLabV3+ architecture with different backbones, including `WideResNet38`, `SEResNeXt(50, 101)` and `ResNet(50,101)`. 
 
   
-## Pre-trained Models
+## Pre-trained models
 We've included pre-trained models. Download checkpoints to a folder `pretrained_models`. 
 
-* [pretrained_models/cityscapes_best.pth](https://drive.google.com/file/d/1P4kPaMY-SmQ3yPJQTJ7xMGAB_Su-1zTl/view?usp=sharing)[1071MB]
-* [pretrained_models/camvid_best.pth](https://drive.google.com/file/d/1OzUCbFdXulB2P80Qxm7C3iNTeTP0Mvb_/view?usp=sharing)[1071MB]
-* [pretrained_models/kitti_best.pth](https://drive.google.com/file/d/1OrTcqH_I3PHFiMlTTZJgBy8l_pladwtg/view?usp=sharing)[1071MB]
+* [pretrained_models/cityscapes_best.pth](https://drive.google.com/file/d/1P4kPaMY-SmQ3yPJQTJ7xMGAB_Su-1zTl/view?usp=sharing)[1071MB, WideResNet38 backbone]
+* [pretrained_models/camvid_best.pth](https://drive.google.com/file/d/1OzUCbFdXulB2P80Qxm7C3iNTeTP0Mvb_/view?usp=sharing)[1071MB, WideResNet38 backbone]
+* [pretrained_models/kitti_best.pth](https://drive.google.com/file/d/1OrTcqH_I3PHFiMlTTZJgBy8l_pladwtg/view?usp=sharing)[1071MB, WideResNet38 backbone]
 * [pretrained_models/sdc_cityscapes_vrec.pth.tar](https://drive.google.com/file/d/1OxnJo2tFEQs3vuY01ibPFjn3cRCo2yWt/view?usp=sharing)[38MB]
 * [pretrained_models/FlowNet2_checkpoint.pth.tar](https://drive.google.com/file/d/1hF8vS6YeHkx3j2pfCeQqqZGwA_PJq_Da/view?usp=sharing)[620MB]
 
-Imagenet Weights
+ImageNet Weights
 * [pretrained_models/wider_resnet38.pth.tar](https://drive.google.com/file/d/1OfKQPQXbXGbWAQJj2R82x6qyz6f-1U6t/view?usp=sharing)[833MB]
 
 ## Data Loaders
 
-Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datasets](./datasets). <br />
+Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datasets](./datasets). Details of preparing each dataset can be found at [PREPARE_DATASETS.md](https://github.com/NVIDIA/semantic-segmentation/blob/master/PREPARE_DATASETS.md) <br />
 
 
  
-# Running the code
+# A quick start with light SEResNeXt50 backbone
 
-Dataloader: To run the code you will have to change the datapath location in  `config.py` for your data.
-Model Arch: You can change the architecture name using `--arch` flag available in `train.py`. 
+Note that, in this section, we use the standard train/val split in Cityscapes to train our model, which is `cv 0`. 
+
+If you have less than 8 GPUs in your machine, please change `--nproc_per_node=8` to the number of GPUs you have in all the .sh files under folder `scripts`.
 
 ## Pre-Training on Mapillary 
-First, you can pre-train a DeepLabV3+ model with `SEResNeXt(50)-Stride8` trunk on Mapillary dataset. Set `__C.DATASET.MAPILLARY_DIR` in `config.py` to where you store the Mapillary data. We use the research edition dataset, which you can request from [here](https://www.mapillary.com/dataset/vistas). 
+First, you can pre-train a DeepLabV3+ model with `SEResNeXt50` trunk on Mapillary dataset. Set `__C.DATASET.MAPILLARY_DIR` in `config.py` to where you store the Mapillary data. 
 
- ```
-./scripts/train_mapillary.sh
+```
+./scripts/train_mapillary_SEResNeXt50.sh
 ```
 
 ## Fine-tuning on Cityscapes 
 Once you have the Mapillary pre-trained model (training mIoU should be 50+), you can start fine-tuning the model on Cityscapes dataset. Set `__C.DATASET.CITYSCAPES_DIR` in `config.py` to where you store the Cityscapes data. Your training mIoU in the end should be 80+. 
 ```
-./scripts/train_cityscapes.sh
+./scripts/train_cityscapes_SEResNeXt50.sh
 ```
 
 ## Inference
 
 Our inference code supports two ways of evaluation: pooling and sliding based eval. The pooling based eval is faster than sliding based eval but provides slightly lower numbers. We use `sliding` as default. 
  ```
- ./scripts/eval_cityscapes.sh <weight_file_location> <result_save_location>
+ ./scripts/eval_cityscapes_SEResNeXt50.sh <weight_file_location> <result_save_location>
  ```
 
-For submitting to Cityscapes benchmark, we simply change it to multi-scale setting and use WideResNet38 as the trunk. 
- ```
- ./scripts/submit_cityscapes.sh <weight_file_location> <result_save_location>
- ```
-
-In the `result_save_location` you set, you will find several folders: `rgb`, `pred`, `compose` and `diff`. `rgb` contains the color-encode predicted segmentation masks. `pred` contains what you need to submit to the evaluation server, simply zip it and upload. `compose` contains the overlapped images of original video frame and the color-encode predicted segmentation masks. `diff` contains the difference between our prediction and the ground truth. For the test submission, there is nothing in the `diff` folder because we don't have ground truth. 
+In the `result_save_location` you set, you will find several folders: `rgb`, `pred`, `compose` and `diff`. `rgb` contains the color-encode predicted segmentation masks. `pred` contains what you need to submit to the evaluation server. `compose` contains the overlapped images of original video frame and the color-encode predicted segmentation masks. `diff` contains the difference between our prediction and the ground truth. 
 
 Right now, our inference code only supports Cityscapes dataset.  
 
-# Dataset augmentation
+
+# Reproducing our results with heavy WideResNet38 backbone
+
+Note that, in this section, we use an alternative train/val split in Cityscapes to train our model, which is `cv 2`. You can find the difference between `cv 0` and `cv 2` in the supplementary material section in our arXiv paper. 
+
+## Pre-Training on Mapillary 
+```
+./scripts/train_mapillary_WideResNet38.sh
+```
+
+## Fine-tuning on Cityscapes 
+```
+./scripts/train_cityscapes_WideResNet38.sh
+```
+
+## Inference
+```
+./scripts/eval_cityscapes_WideResNet38.sh <weight_file_location> <result_save_location>
+```
+
+For submitting to Cityscapes benchmark, we change it to multi-scale setting. 
+ ```
+ ./scripts/submit_cityscapes_WideResNet38.sh <weight_file_location> <result_save_location>
+ ```
+
+Now you can zip the `pred` folder and upload to Cityscapes leaderboard. For the test submission, there is nothing in the `diff` folder because we don't have ground truth. 
 
 At this point, you can already achieve top performance on Cityscapes benchmark (83+ mIoU). In order to further boost the segmentation performance, we can use the augmented dataset to help model's generalization capibility. 
 
@@ -131,9 +151,9 @@ By default, we predict five past frames and five future frames, which effectivel
 
 ![alt text](images/vis.png)
 
-# Training IOU
+# Training IOU using fp16
 
-Training results for WideResnet38 and SEResnext50 trained in fp16 on DGX-1 (8-GPU V100)
+Training results for WideResNet38 and SEResNeXt50 trained in fp16 on DGX-1 (8-GPU V100). fp16 can significantly speed up experiments without losing much accuracy. 
 
 <table class="tg">
   <tr>
@@ -187,7 +207,7 @@ Our initial models used SyncBN from [Synchronized Batch Norm](https://github.com
 
 We would also like to thank Ming-Yu Liu and Peter Kontschieder.
  
-## Coding Style
+## Coding style
 * 4 spaces for indentation rather than tabs
 * 100 character line length
 * PEP8 formatting
