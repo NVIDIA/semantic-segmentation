@@ -165,7 +165,7 @@ def main():
 
     net = network.warp_network_in_dataparallel(net, args.apex)
     if args.snapshot:
-        optimizer.load_weights(net, optimizer,
+        optimizer.load_weights(net, optim,
                                args.snapshot, args.restore_optimizer)
 
     torch.cuda.empty_cache()
