@@ -224,11 +224,12 @@ class DeepWV3Plus(nn.Module):
         # TODO: Should this be even here ?
         wide_resnet = torch.nn.DataParallel(wide_resnet)
         try:
-            checkpoint = torch.load('weights/ResNet/wider_resnet38.pth.tar', map_location='cpu')
+            checkpoint = torch.load('./pretrained_models/wider_resnet38.pth.tar', map_location='cpu')
             wide_resnet.load_state_dict(checkpoint['state_dict'])
             del checkpoint
         except:
-            print("=====================Could not load imagenet weights=======================")
+            print("=====================Could not load ImageNet weights=======================")
+            print("Please download the ImageNet weights of WideResNet38 in our repo to ./pretrained_models.")
 
         wide_resnet = wide_resnet.module
 
