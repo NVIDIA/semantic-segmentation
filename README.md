@@ -87,6 +87,8 @@ First, you can pre-train a DeepLabV3+ model with `SEResNeXt50` trunk on Mapillar
 ./scripts/train_mapillary_SEResNeXt50.sh
 ```
 
+When you first run training on a new dataset with flag `--class_uniform_pct` on, it will take some time to preprocess the dataset. Depending on your machine, the preprocessing can take half an hour or more. Once it finishes, you will have a json file in your root folder, e.g., `mapillary_tile1024.json`. You can read more details about `class uniform sampling` in our paper, the idea is to make sure that all classes are approximately uniformly chosen during training.
+
 ## Fine-tuning on Cityscapes 
 Once you have the Mapillary pre-trained model (training mIoU should be 50+), you can start fine-tuning the model on Cityscapes dataset. Set `__C.DATASET.CITYSCAPES_DIR` in `config.py` to where you store the Cityscapes data. Your training mIoU in the end should be 80+. 
 ```
