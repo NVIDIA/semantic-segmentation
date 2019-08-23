@@ -73,6 +73,15 @@ ImageNet Weights
 Dataloaders for Cityscapes, Mapillary, Camvid and Kitti are available in [datasets](./datasets). Details of preparing each dataset can be found at [PREPARE_DATASETS.md](https://github.com/NVIDIA/semantic-segmentation/blob/master/PREPARE_DATASETS.md) <br />
 
 
+# Semantic segmentation demo for a single image
+
+If you want to try our trained model on any driving scene images, simply use
+
+```
+CUDA_VISIBLE_DEVICES=0 python demo.py --demo-image YOUR_IMG --snapshot ./pretrained_models/cityscapes_best_wideresnet38.pth --save-dir YOUR_SAVE_DIR
+```
+This snapshot is trained on Cityscapes dataset, with DeepLabV3+ architecture and WideResNet38 backbone. The prediction images will be saved to `YOUR_SAVE_DIR`. 
+
  
 # A quick start with light SEResNeXt50 backbone
 
