@@ -79,6 +79,12 @@ __C.DATASET.CAMVID_DIR = ''
 __C.DATASET.CV_SPLITS = 3
 
 
+__C.DATASET.CITYSCAPES_DIR = '/home/dcg-adlr-atao-data.cosmos277/data/Cityscapes'
+__C.DATASET.CITYSCAPES_AUG_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/cityscapes_aug5'
+#__C.DATASET.CITYSCAPES_DIR = '/home/adlr.cosmos159/atao/data/Cityscapes'
+#__C.DATASET.CITYSCAPES_AUG_DIR = '/home/dcg-adlr-yizhu-data.cosmos216/yizhu/data/cityscapes_aug5'
+
+
 __C.MODEL = AttrDict()
 __C.MODEL.BN = 'regularnorm'
 __C.MODEL.BNFUNC = None

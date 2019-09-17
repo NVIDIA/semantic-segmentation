@@ -78,6 +78,8 @@ parser.add_argument('--resume', action='store_true', default=False,
                     help='Resume Inference')
 parser.add_argument('--batch_size', type=int, default=1,
                     help='Only in pooling mode')
+parser.add_argument('--fp16',action='store_true', default=True,
+                    help='Use fp16 inference')
 
 args = parser.parse_args()
 assert_and_infer_cfg(args, train_mode=False)
@@ -307,7 +309,21 @@ def inference_sliding(model, img, scales):
         mapping, input_crops = sliding_window_cropping(image_list, scale=scale)
         with torch.no_grad():
             input_crops = Variable(input_crops.cuda())
-            output_scattered = model(input_crops)
+            if args.fp16:
+                input_crops = input_crops.half()
+        
+            # For users running on single gpu but want the best accuracy.    
+            if scale > 1.0 and torch.cuda.device_count() == 1:
+                part_1 = input_crops.shape[0] // 2
+                output_scattered_by_part_1 = model(input_crops[:part_1]).cpu()
+                output_scattered_by_part_2 = model(input_crops[part_1:]).cpu()
+                output_scattered = torch.cat(
+                                             [output_scattered_by_part_1,
+                                             output_scattered_by_part_2
+                                             ]
+                                            )
+            else:
+                output_scattered = model(input_crops)
 
         output_scattered = output_scattered.data.cpu().numpy()
 
@@ -375,6 +391,8 @@ def get_net():
         net = torch.nn.DataParallel(net).cuda()
     net, _ = restore_snapshot(net, optimizer=None,
                               snapshot=args.snapshot, restore_optimizer_bool=False)
+    if args.fp16:
+        net = net.half()
     net.eval()
     return net
 
@@ -426,6 +444,10 @@ class RunEval():
         else:
 
             img = to_pil(imgs[0])
+        if os.path.exists(pred_img_name):
+            print('skipping', pred_img_name)
+            return 
+
         prediction_pre_argmax_collection = inference(net, img, scales)
 
         if self.inference_mode == 'pooling':
