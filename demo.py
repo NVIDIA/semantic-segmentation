@@ -37,8 +37,6 @@ print('Net restored.')
 mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*mean_std)])
 img = Image.open(args.demo_image).convert('RGB')
-img = img.resize((2048, 2048))
-print(img.size)
 img_tensor = img_transform(img)
 
 # predict
