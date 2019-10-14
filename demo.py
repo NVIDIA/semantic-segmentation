@@ -21,7 +21,8 @@ parser.add_argument('--arch', type=str, default='network.deepv3.DeepWV3Plus', he
 parser.add_argument('--save-dir', type=str, default='./save', help='path to save your results')
 args = parser.parse_args()
 assert_and_infer_cfg(args, train_mode=False)
-cudnn.benchmark = True
+cudnn.benchmark = False
+torch.cuda.empty_cache()
 
 # get net
 args.dataset_cls = cityscapes
@@ -36,6 +37,8 @@ print('Net restored.')
 mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*mean_std)])
 img = Image.open(args.demo_image).convert('RGB')
+img = img.resize((2048, 2048))
+print(img.size)
 img_tensor = img_transform(img)
 
 # predict
