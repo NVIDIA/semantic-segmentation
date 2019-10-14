@@ -21,7 +21,8 @@ parser.add_argument('--arch', type=str, default='network.deepv3.DeepWV3Plus', he
 parser.add_argument('--save-dir', type=str, default='./save', help='path to save your results')
 args = parser.parse_args()
 assert_and_infer_cfg(args, train_mode=False)
-cudnn.benchmark = True
+cudnn.benchmark = False
+torch.cuda.empty_cache()
 
 # get net
 args.dataset_cls = cityscapes

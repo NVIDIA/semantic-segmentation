@@ -82,7 +82,7 @@ parser.add_argument('--batch_size', type=int, default=1,
 args = parser.parse_args()
 assert_and_infer_cfg(args, train_mode=False)
 args.apex = False  # No support for apex eval
-cudnn.benchmark = True
+cudnn.benchmark = False
 mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 date_str = str(datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
 
@@ -305,9 +305,19 @@ def inference_sliding(model, img, scales):
             flip_list.append(flip)
 
         mapping, input_crops = sliding_window_cropping(image_list, scale=scale)
+        torch.cuda.empty_cache()
         with torch.no_grad():
-            input_crops = Variable(input_crops.cuda())
-            output_scattered = model(input_crops)
+            bi, _, hi, wi = input_crops.size()
+            if hi >= args.crop_size:
+                output_scattered_list = []
+                for b_idx in range(bi):
+                    cur_input = input_crops[b_idx,:,:,:].unsqueeze(0).cuda()
+                    cur_output = model(cur_input)
+                    output_scattered_list.append(cur_output)
+                output_scattered = torch.cat(output_scattered_list, dim=0)
+            else:
+                input_crops = input_crops.cuda()
+                output_scattered = model(input_crops)
 
         output_scattered = output_scattered.data.cpu().numpy()
 
