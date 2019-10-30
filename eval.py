@@ -1,6 +1,7 @@
 """
 Evaluation Script
 Support Two Modes: Pooling based inference and sliding based inference
+Pooling based inference is simply whole image inference.
 """
 import os
 import logging
@@ -31,14 +32,9 @@ from optimizer import restore_snapshot
 from utils.my_data_parallel import MyDataParallel
 from utils.misc import fast_hist, save_log, per_class_iu, evaluate_eval_for_inference
 
-
-
 import network
 
 sys.path.append(os.path.join(os.getcwd()))
-
-
-
 sys.path.append(os.path.join(os.getcwd(), '../'))
 
 parser = argparse.ArgumentParser(description='evaluation')

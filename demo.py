@@ -16,7 +16,7 @@ from config import assert_and_infer_cfg
 
 parser = argparse.ArgumentParser(description='demo')
 parser.add_argument('--demo-image', type=str, default='', help='path to demo image', required=True)
-parser.add_argument('--snapshot', type=str, default='./pretrained_models/cityscapes_best_wideresnet38.pth', help='pre-trained checkpoint', required=True)
+parser.add_argument('--snapshot', type=str, default='./pretrained_models/cityscapes_best.pth', help='pre-trained checkpoint', required=True)
 parser.add_argument('--arch', type=str, default='network.deepv3.DeepWV3Plus', help='network architecture used for inference')
 parser.add_argument('--save-dir', type=str, default='./save', help='path to save your results')
 args = parser.parse_args()
