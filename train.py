@@ -163,7 +163,7 @@ def main():
     if args.fp16:
         net, optim = amp.initialize(net, optim, opt_level="O1")
 
-    net = network.warp_network_in_dataparallel(net, args.apex)
+    net = network.wrap_network_in_dataparallel(net, args.apex)
     if args.snapshot:
         optimizer.load_weights(net, optim,
                                args.snapshot, args.restore_optimizer)
@@ -207,8 +207,6 @@ def train(train_loader, net, optim, curr_epoch, writer):
     curr_iter = curr_epoch * len(train_loader)
 
     for i, data in enumerate(train_loader):
-        # inputs = (2,3,713,713)
-        # gts    = (2,713,713)
         inputs, gts, _img_name = data
 
         batch_pixel_size = inputs.size(0) * inputs.size(2) * inputs.size(3)
@@ -228,7 +226,7 @@ def train(train_loader, net, optim, curr_epoch, writer):
             log_main_loss = main_loss.clone().detach_()
 
         train_main_loss.update(log_main_loss.item(), batch_pixel_size)
-        if args.fp16:  # and 0:
+        if args.fp16:
             with amp.scale_loss(main_loss, optim) as scaled_loss:
                 scaled_loss.backward()
         else:
@@ -273,8 +271,6 @@ def validate(val_loader, net, criterion, optim, curr_epoch, writer):
     dump_images = []
 
     for val_idx, data in enumerate(val_loader):
-        # input        = torch.Size([1, 3, 713, 713])
-        # gt_image           = torch.Size([1, 713, 713])
         inputs, gt_image, img_names = data
         assert len(inputs.size()) == 4 and len(gt_image.size()) == 3
         assert inputs.size()[2:] == gt_image.size()[1:]
@@ -289,10 +285,6 @@ def validate(val_loader, net, criterion, optim, curr_epoch, writer):
         assert output.size()[1] == args.dataset_cls.num_classes
 
         val_loss.update(criterion(output, gt_cuda).item(), batch_pixel_size)
-
-        # Collect data from different GPU to a single GPU since
-        # encoding.parallel.criterionparallel function calculates distributed loss
-        # functions
         predictions = output.data.max(1)[1].cpu()
 
         # Logging

@@ -47,9 +47,6 @@ class _AtrousSpatialPyramidPoolingModule(nn.Module):
     def __init__(self, in_dim, reduction_dim=256, output_stride=16, rates=(6, 12, 18)):
         super(_AtrousSpatialPyramidPoolingModule, self).__init__()
 
-        # Check if we are using distributed BN and use the nn from encoding.nn
-        # library rather than using standard pytorch.nn
-
         if output_stride == 8:
             rates = [2 * r for r in rates]
         elif output_stride == 16:
@@ -94,7 +91,7 @@ class _AtrousSpatialPyramidPoolingModule(nn.Module):
 
 class DeepV3Plus(nn.Module):
     """
-    Implement DeepLab-V3 model
+    Implement DeepLabV3 model
     A: stride8
     B: stride16
     with skip connections
@@ -143,7 +140,6 @@ class DeepV3Plus(nn.Module):
                 elif 'downsample.0' in n:
                     m.stride = (1, 1)
         else:
-            # raise 'unknown deepv3 variant: {}'.format(self.variant)
             print("Not using Dilation ")
 
         self.aspp = _AtrousSpatialPyramidPoolingModule(2048, 256,
@@ -203,16 +199,17 @@ class DeepV3Plus(nn.Module):
 
 class DeepWV3Plus(nn.Module):
     """
-    Wide_resnet version of DeepLabV3
+    WideResNet38 version of DeepLabV3
     mod1
     pool2
-    mod2 str2
+    mod2 bot_fine
     pool3
     mod3-7
+    bot_aspp
 
-      structure: [3, 3, 6, 3, 1, 1]
-      channels = [(128, 128), (256, 256), (512, 512), (512, 1024), (512, 1024, 2048),
-                  (1024, 2048, 4096)]
+    structure: [3, 3, 6, 3, 1, 1]
+    channels = [(128, 128), (256, 256), (512, 512), (512, 1024), (512, 1024, 2048),
+              (1024, 2048, 4096)]
     """
 
     def __init__(self, num_classes, trunk='WideResnet38', criterion=None):
@@ -220,17 +217,17 @@ class DeepWV3Plus(nn.Module):
         super(DeepWV3Plus, self).__init__()
         self.criterion = criterion
         logging.info("Trunk: %s", trunk)
-        wide_resnet = wider_resnet38_a2(classes=1000, dilation=True)
-        # TODO: Should this be even here ?
-        wide_resnet = torch.nn.DataParallel(wide_resnet)
-        try:
-            checkpoint = torch.load('./pretrained_models/wider_resnet38.pth.tar', map_location='cpu')
-            wide_resnet.load_state_dict(checkpoint['state_dict'])
-            del checkpoint
-        except:
-            print("=====================Could not load ImageNet weights=======================")
-            print("Please download the ImageNet weights of WideResNet38 in our repo to ./pretrained_models.")
 
+        wide_resnet = wider_resnet38_a2(classes=1000, dilation=True)
+        wide_resnet = torch.nn.DataParallel(wide_resnet)
+        if criterion is not None:
+            try:
+                checkpoint = torch.load('./pretrained_models/wider_resnet38.pth.tar', map_location='cpu')
+                wide_resnet.load_state_dict(checkpoint['state_dict'])
+                del checkpoint
+            except:
+                print("Please download the ImageNet weights of WideResNet38 in our repo to ./pretrained_models/wider_resnet38.pth.tar.")
+                raise RuntimeError("=====================Could not load ImageNet weights of WideResNet38 network.=======================")
         wide_resnet = wide_resnet.module
 
         self.mod1 = wide_resnet.mod1
@@ -290,21 +287,21 @@ class DeepWV3Plus(nn.Module):
 
 def DeepSRNX50V3PlusD_m1(num_classes, criterion):
     """
-    SEResnet 50 Based Network
+    SEResNeXt-50 Based Network
     """
     return DeepV3Plus(num_classes, trunk='seresnext-50', criterion=criterion, variant='D',
                       skip='m1')
 
 def DeepR50V3PlusD_m1(num_classes, criterion):
     """
-    Resnet 50 Based Network
+    ResNet-50 Based Network
     """
     return DeepV3Plus(num_classes, trunk='resnet-50', criterion=criterion, variant='D', skip='m1')
 
 
 def DeepSRNX101V3PlusD_m1(num_classes, criterion):
     """
-    SeResnext 101 Based Network
+    SEResNeXt-101 Based Network
     """
     return DeepV3Plus(num_classes, trunk='seresnext-101', criterion=criterion, variant='D',
                       skip='m1')
