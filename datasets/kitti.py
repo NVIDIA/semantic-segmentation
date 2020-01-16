@@ -76,7 +76,7 @@ def make_dataset(quality, mode, maxSkip=0, cv_split=0, hardnm=0):
     all_items = []
     aug_items = []
 
-    assert quality == 'semantic' 
+    assert quality == 'semantic'
     assert mode in ['train', 'val', 'trainval']
     # note that train and val are randomly determined, no official split
 
@@ -109,6 +109,24 @@ def make_dataset(quality, mode, maxSkip=0, cv_split=0, hardnm=0):
 
     return items, aug_items
 
+def make_test_dataset(quality, mode, maxSkip=0, cv_split=0):
+
+    items = []
+    assert quality == 'semantic'
+    assert mode == 'test'
+
+    img_dir_name = "testing"
+    img_path = os.path.join(root, img_dir_name, 'image_2')
+
+    c_items = os.listdir(img_path)
+    c_items.sort()
+    for it in c_items:
+        item = (os.path.join(img_path, it), None)
+        items.append(item)
+    logging.info('KITTI has a total of {} test images'.format(len(items)))
+
+    return items, []
+
 class KITTI(data.Dataset):
 
     def __init__(self, quality, mode, maxSkip=0, joint_transform_list=None,
@@ -136,7 +154,10 @@ class KITTI(data.Dataset):
         else:
             self.cv_split = 0
 
-        self.imgs, _ = make_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split, hardnm=self.hardnm)
+        if self.mode == 'test':
+            self.imgs, _ = make_test_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split)
+        else:
+            self.imgs, _ = make_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split, hardnm=self.hardnm)
         assert len(self.imgs), 'Found 0 images, please check the data set'
         # self.cal_shape(self.imgs)
 
@@ -193,7 +214,10 @@ class KITTI(data.Dataset):
         else:
             img_path, mask_path = elem
 
-        img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
+        if self.mode == 'test':
+            img, mask = Image.open(img_path).convert('RGB'), None
+        else:
+            img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         # kitti scale correction factor
@@ -206,16 +230,21 @@ class KITTI(data.Dataset):
             width, height = 1242, 376
             img = img.resize((width, height), Image.BICUBIC)
             mask = mask.resize((width, height), Image.NEAREST)
+        elif self.mode == 'test':
+            img_keepsize = img.copy()
+            width, height = 1280, 384
+            img = img.resize((width, height), Image.BICUBIC)
         else:
             logging.info('Unknown mode {}'.format(mode))
             sys.exit()
 
-        mask = np.array(mask)
-        mask_copy = mask.copy()
+        if self.mode != 'test':
+            mask = np.array(mask)
+            mask_copy = mask.copy()
 
-        for k, v in id_to_trainid.items():
-            mask_copy[mask == k] = v
-        mask = Image.fromarray(mask_copy.astype(np.uint8))
+            for k, v in id_to_trainid.items():
+                mask_copy[mask == k] = v
+            mask = Image.fromarray(mask_copy.astype(np.uint8))
 
         # Image Transformations
         if self.joint_transform_list is not None:
@@ -241,8 +270,12 @@ class KITTI(data.Dataset):
 
         if self.transform is not None:
             img = self.transform(img)
+            if self.mode == 'test':
+                img_keepsize = self.transform(img_keepsize)
+                mask = img_keepsize
         if self.target_transform is not None:
-            mask = self.target_transform(mask)
+            if self.mode != 'test':
+                mask = self.target_transform(mask)
 
         return img, mask, img_name
 
