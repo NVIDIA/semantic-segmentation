@@ -63,7 +63,6 @@ def setup_loaders(args):
         args.train_batch_size = args.bs_mult
         args.val_batch_size = args.bs_mult_val
 
-    
     args.num_workers = 4 * args.ngpu
     if args.test_mode:
         args.num_workers = 1
@@ -112,7 +111,7 @@ def setup_loaders(args):
 
     target_transform = extended_transforms.MaskToTensor()
     
-    if args.jointwtborder: 
+    if args.jointwtborder:
         target_train_transform = extended_transforms.RelaxedBoundaryLossToTensor(args.dataset_cls.ignore_label, 
             args.dataset_cls.num_classes)
     else:
@@ -155,7 +154,7 @@ def setup_loaders(args):
         eval_size = 1536
         val_joint_transform_list = [
             joint_transforms.ResizeHeight(eval_size),
-            joint_transforms.CenterCropPad(eval_size)]
+            joint_transforms.CenterCropPad(eval_size, ignore_index=args.dataset_cls.ignore_label)]
         train_set = args.dataset_cls.Mapillary(
             'semantic', 'train',
             joint_transform_list=train_joint_transform_list,

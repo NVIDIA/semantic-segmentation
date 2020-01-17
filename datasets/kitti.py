@@ -1,5 +1,6 @@
 """
 KITTI Dataset Loader
+http://www.cvlibs.net/datasets/kitti/eval_semseg.php?benchmark=semantics2015
 """
 
 import os
@@ -37,8 +38,7 @@ def colorize_mask(mask):
     return new_mask
 
 def get_train_val(cv_split, all_items):
-
-    # 90/10 train/val split, three random splits
+    # 90/10 train/val split, three random splits for cross validation
     val_0 = [1,5,11,29,35,49,57,68,72,82,93,115,119,130,145,154,156,167,169,189,198]
     val_1 = [0,12,24,31,42,50,63,71,84,96,101,112,121,133,141,155,164,171,187,191,197]
     val_2 = [3,6,13,21,41,54,61,73,88,91,110,121,126,131,142,149,150,163,173,183,199]
@@ -71,12 +71,11 @@ def get_train_val(cv_split, all_items):
     return train_set, val_set
 
 def make_dataset(quality, mode, maxSkip=0, cv_split=0, hardnm=0):
-    
     items = []
     all_items = []
     aug_items = []
 
-    assert quality == 'semantic' 
+    assert quality == 'semantic'
     assert mode in ['train', 'val', 'trainval']
     # note that train and val are randomly determined, no official split
 
@@ -92,7 +91,7 @@ def make_dataset(quality, mode, maxSkip=0, cv_split=0, hardnm=0):
         all_items.append(item)
     logging.info('KITTI has a total of {} images'.format(len(all_items)))
 
-    # split into train/val 
+    # split into train/val
     train_set, val_set = get_train_val(cv_split, all_items)
 
     if mode == 'train':
@@ -109,11 +108,28 @@ def make_dataset(quality, mode, maxSkip=0, cv_split=0, hardnm=0):
 
     return items, aug_items
 
+def make_test_dataset(quality, mode, maxSkip=0, cv_split=0):
+    items = []
+    assert quality == 'semantic'
+    assert mode == 'test'
+
+    img_dir_name = "testing"
+    img_path = os.path.join(root, img_dir_name, 'image_2')
+
+    c_items = os.listdir(img_path)
+    c_items.sort()
+    for it in c_items:
+        item = (os.path.join(img_path, it), None)
+        items.append(item)
+    logging.info('KITTI has a total of {} test images'.format(len(items)))
+
+    return items, []
+
 class KITTI(data.Dataset):
 
     def __init__(self, quality, mode, maxSkip=0, joint_transform_list=None,
                  transform=None, target_transform=None, dump_images=False,
-                 class_uniform_pct=0, class_uniform_tile=0, test=False, 
+                 class_uniform_pct=0, class_uniform_tile=0, test=False,
                  cv_split=None, scf=None, hardnm=0):
 
         self.quality = quality
@@ -136,9 +152,11 @@ class KITTI(data.Dataset):
         else:
             self.cv_split = 0
 
-        self.imgs, _ = make_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split, hardnm=self.hardnm)
+        if self.mode == 'test':
+            self.imgs, _ = make_test_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split)
+        else:
+            self.imgs, _ = make_dataset(quality, mode, self.maxSkip, cv_split=self.cv_split, hardnm=self.hardnm)
         assert len(self.imgs), 'Found 0 images, please check the data set'
-        # self.cal_shape(self.imgs)
 
         # Centroids for GT data
         if self.class_uniform_pct > 0:
@@ -168,20 +186,12 @@ class KITTI(data.Dataset):
 
         self.build_epoch()
 
-
-    def cal_shape(self, imgs):
-
-        for i in imgs:
-            img_path, mask_path = i
-            img = Image.open(img_path).convert('RGB')
-            print(img.size)
-
     def build_epoch(self, cut=False):
         if self.class_uniform_pct > 0:
             self.imgs_uniform = uniform.build_epoch(self.imgs,
-                                                self.centroids,
-                                                num_classes,
-                                                cfg.CLASS_UNIFORM_PCT)
+                                                    self.centroids,
+                                                    num_classes,
+                                                    cfg.CLASS_UNIFORM_PCT)
         else:
             self.imgs_uniform = self.imgs
 
@@ -193,7 +203,10 @@ class KITTI(data.Dataset):
         else:
             img_path, mask_path = elem
 
-        img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
+        if self.mode == 'test':
+            img, mask = Image.open(img_path).convert('RGB'), None
+        else:
+            img, mask = Image.open(img_path).convert('RGB'), Image.open(mask_path)
         img_name = os.path.splitext(os.path.basename(img_path))[0]
 
         # kitti scale correction factor
@@ -206,16 +219,21 @@ class KITTI(data.Dataset):
             width, height = 1242, 376
             img = img.resize((width, height), Image.BICUBIC)
             mask = mask.resize((width, height), Image.NEAREST)
+        elif self.mode == 'test':
+            img_keepsize = img.copy()
+            width, height = 1280, 384
+            img = img.resize((width, height), Image.BICUBIC)
         else:
             logging.info('Unknown mode {}'.format(mode))
             sys.exit()
 
-        mask = np.array(mask)
-        mask_copy = mask.copy()
+        if self.mode != 'test':
+            mask = np.array(mask)
+            mask_copy = mask.copy()
 
-        for k, v in id_to_trainid.items():
-            mask_copy[mask == k] = v
-        mask = Image.fromarray(mask_copy.astype(np.uint8))
+            for k, v in id_to_trainid.items():
+                mask_copy[mask == k] = v
+            mask = Image.fromarray(mask_copy.astype(np.uint8))
 
         # Image Transformations
         if self.joint_transform_list is not None:
@@ -241,11 +259,14 @@ class KITTI(data.Dataset):
 
         if self.transform is not None:
             img = self.transform(img)
+            if self.mode == 'test':
+                img_keepsize = self.transform(img_keepsize)
+                mask = img_keepsize
         if self.target_transform is not None:
-            mask = self.target_transform(mask)
+            if self.mode != 'test':
+                mask = self.target_transform(mask)
 
         return img, mask, img_name
 
     def __len__(self):
         return len(self.imgs_uniform)
-

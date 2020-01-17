@@ -26,7 +26,7 @@ import numpy as np
 import transforms.transforms as extended_transforms
 
 from config import assert_and_infer_cfg
-from datasets import cityscapes
+from datasets import cityscapes, kitti
 from optimizer import restore_snapshot
 
 from utils.my_data_parallel import MyDataParallel
@@ -353,6 +353,12 @@ def setup_loader():
                                                eval_scales=eval_scales,
                                                eval_flip=not args.no_flip,
                                                )
+    elif args.dataset == 'kitti':
+        args.dataset_cls = kitti
+        test_set = args.dataset_cls.KITTI(args.mode, args.split,
+                                         transform=val_input_transform,
+                                         target_transform=target_transform,
+                                         cv_split=args.cv_split)
     else:
         raise NameError('-------------Not Supported Currently-------------')
 
@@ -440,6 +446,17 @@ class RunEval():
         else:
             prediction_pre_argmax = np.mean(prediction_pre_argmax_collection, axis=0)
             prediction = np.argmax(prediction_pre_argmax, axis=0)
+        print(prediction.shape)
+
+        if args.dataset == 'kitti' and args.split == 'test':
+            origin_h, origin_w = 375, 1242
+            pred_pil = Image.fromarray(prediction.astype('uint8'))
+            pred_pil = pred_pil.resize((origin_w, origin_h), Image.NEAREST)
+            small_img = img.copy()
+            small_img = small_img.resize((origin_w, origin_h), Image.BICUBIC)
+            prediction = np.array(pred_pil)
+            print(prediction.shape)
+
 
         if self.metrics:
             self.hist += fast_hist(prediction.flatten(), gt.cpu().numpy().flatten(),
@@ -457,10 +474,13 @@ class RunEval():
 
             colorized = self.dataset_cls.colorize_mask(prediction)
             colorized.save(col_img_name)
-            blend = Image.blend(img.convert("RGBA"), colorized.convert("RGBA"), 0.5)
+            if args.dataset == 'kitti' and args.split == 'test':
+                blend = Image.blend(small_img.convert("RGBA"), colorized.convert("RGBA"), 0.5)
+            else:
+                blend = Image.blend(img.convert("RGBA"), colorized.convert("RGBA"), 0.5)
             blend.save(compose_img_name)
 
-            if gt is not None:
+            if gt is not None and args.split != 'test':
                 gt = gt[0].cpu().numpy()
                 # only write diff image if gt is valid
                 diff = (prediction != gt)
@@ -534,6 +554,8 @@ def main():
 
     # Set up network, loader, inference mode
     metrics = args.dataset != 'video_folder'
+    if args.dataset == 'kitti' and args.split == 'test':
+        metrics = False
     test_loader = setup_loader()
 
     runner = RunEval(output_dir, metrics,
