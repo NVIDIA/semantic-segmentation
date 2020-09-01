@@ -99,8 +99,10 @@ Train cityscapes, using HRNet + OCR + multi-scale attention with fine data and m
 
 The first time this command is run, a centroid file has to be built for the dataset. It'll take about 10 minutes. The centroid file is used during training to know how to sample from the dataset in a class-uniform way.
 
+This training run should deliver a model that achieves 84.7 IOU.
+
 ## Train SOTA default train-val split
 ```bash
 > python -m runx.runx  scripts/train_cityscapes_sota.yml -i
 ```
-Again, use `-n` to do a dry run and just print out the command. This should result in a model with 84.7 IOU. If you run out of memory, try to lower the crop size or turn off rmi_loss.
+Again, use `-n` to do a dry run and just print out the command. This should result in a model with 86.8 IOU. If you run out of memory, try to lower the crop size or turn off rmi_loss.
