@@ -4,7 +4,6 @@
 
 CMD: "python -m torch.distributed.launch --nproc_per_node=16 train.py"
 
-LOGROOT: "/home/dcg-adlr-ksapra-output.cosmos178/SemanticSegmentation/clean_runs_for_release_v2"
 HPARAMS: [
   {
    dataset: cityscapes,
