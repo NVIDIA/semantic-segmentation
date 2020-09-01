@@ -1,0 +1,16 @@
+# The log root directory:
+LOGROOT: logs
+
+# Code to ignore for copy
+CODE_IGNORE_PATTERNS: '*.pth,*.pyc,docs,test,.git,*__pycache__,logs'
+
+# Farm-specific items:
+FARM: myfarm
+
+myfarm:
+    SUBMIT_CMD: 'submit_job'
+    RESOURCES:
+        image: some_docker_image
+        gpu: 8
+        mem: 400
+

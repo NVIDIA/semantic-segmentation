@@ -1,0 +1,22 @@
+# Train cityscapes with deeplab v3+ and wide-resnet-38 trunk
+# Only requires 16GB gpus
+
+CMD: "python -m torch.distributed.launch --nproc_per_node=8 train.py"
+
+HPARAMS: [
+  {
+   dataset: cityscapes,
+   cv: 0,
+   syncbn: true,
+   apex: true,
+   fp16: true,
+   crop_size: "800,800",
+   bs_trn: 1,
+   poly_exp: 2,
+   lr: 5e-3,
+   max_epoch: 175,
+   arch: deepv3.DeepV3PlusW38,
+   result_dir: LOGDIR,
+   RUNX.TAG: '{arch}',
+  },
+]

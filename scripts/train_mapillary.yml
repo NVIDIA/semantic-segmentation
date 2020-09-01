@@ -1,0 +1,31 @@
+# Single node Mapillary training recipe
+# Requires 32GB GPU
+
+CMD: "python -m torch.distributed.launch --nproc_per_node=8 train.py"
+
+hparams: [
+  {
+   dataset: mapillary,
+   cv: 0,
+   result_dir: LOGDIR,
+
+   pre_size: 2177,
+   crop_size: "1024,1024",
+   syncbn: true,
+   apex: true,
+   fp16: true,
+   gblur: true,
+
+   bs_trn: 2,
+
+   lr_schedule: poly,
+   poly_exp: 1.0,
+   optimizer: sgd,
+   lr: 5e-3,
+   max_epoch: 200,
+   rmi_loss: true,
+
+   arch: ocrnet.HRNet_Mscale,
+   n_scales: '0.5,1.0,2.0',
+  }
+]

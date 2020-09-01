@@ -1,0 +1,21 @@
+# Run Evaluation on Mapillary with a pretrained model
+
+CMD: "python -m torch.distributed.launch --nproc_per_node=8 train.py"
+
+HPARAMS: [
+  {
+   dataset: mapillary,
+   syncbn: true,
+   apex: true,
+   fp16: true,
+   bs_val: 1,
+   eval: val,
+   pre_size: 2177,
+   amp_opt_level: O3,
+   n_scales: "0.25,0.5,1.0,2.0",
+   do_flip: true,
+   snapshot: "ASSETS_PATH/seg_weights/mapillary_ocrnet.HRNet_Mscale_fast-rattlesnake.pth",
+   arch: ocrnet.HRNet_Mscale,
+   result_dir: LOGDIR,
+  },
+]

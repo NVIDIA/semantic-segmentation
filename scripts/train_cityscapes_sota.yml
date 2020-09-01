@@ -1,0 +1,35 @@
+# Train cityscapes using Mapillary-pretrained weights
+# Requires 32GB GPU
+# Adjust nproc_per_node according to how many GPUs you have
+
+CMD: "python -m torch.distributed.launch --nproc_per_node=16 train.py"
+
+LOGROOT: "/home/dcg-adlr-ksapra-output.cosmos178/SemanticSegmentation/clean_runs_for_release_v2"
+HPARAMS: [
+  {
+   dataset: cityscapes,
+   cv: 0,
+   syncbn: true,
+   apex: true,
+   fp16: true,
+   crop_size: "1024,2048",
+   bs_trn: 1,
+   poly_exp: 2,
+   lr: 1e-2,
+   max_epoch: 175,
+   max_cu_epoch: 150,
+   rmi_loss: true,
+   n_scales: ['0.5,1.0,2.0'],
+   supervised_mscale_loss_wt: 0.05,
+   
+   arch: ocrnet.HRNet_Mscale,
+   snapshot: "ASSETS_PATH/seg_weights/ocrnet.HRNet_industrious-chicken.pth",
+   result_dir: LOGDIR,
+   RUNX.TAG: 'sota-cv0-{arch}',
+
+   coarse_boost_classes: "3,4,6,7,9,11,12,13,14,15,16,17,18",
+   custom_coarse_dropout_classes: "14,15,16",
+   mask_out_cityscapes: true,
+   custom_coarse_prob: 0.5,
+    }, 
+]
