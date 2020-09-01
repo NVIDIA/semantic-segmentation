@@ -62,7 +62,7 @@ Real run:
 > python -m runx.runx scripts/eval_cityscapes.yml -i
 ```
 
-The reported IOU should be 86.92. This evaluates with scales of 0.5, 1.0. and 2.0. You will find evaluation results in ./logs/eval_cityscapes.
+The reported IOU should be 86.92. This evaluates with scales of 0.5, 1.0. and 2.0. You will find evaluation results in ./logs/eval_cityscapes/...
 
 ### Run inference on Mapillary
 
@@ -70,16 +70,15 @@ The reported IOU should be 86.92. This evaluates with scales of 0.5, 1.0. and 2.
 > python -m runx.runx scripts/eval_mapillary.yml -i
 ```
 
-The reported IOU should be 61.05. Note that this must be run on a 32GB node and the use of 'O3' mode for amp is critical in order to avoid GPU out of memory.
-
-
-The first time this command is run, a centroid file has to be built for the dataset. It'll take about 30 minutes.
+The reported IOU should be 61.05. Note that this must be run on a 32GB node and the use of 'O3' mode for amp is critical in order to avoid GPU out of memory. Results in logs/eval_mapillary/...
 
 ### Dump images for Cityscapes
 
 ```bash
 > python -m runx.runx scripts/dump_cityscapes.yml -i
 ```
+
+This will dump network output and composited images from running evaluation with the Cityscapes validation set. 
 
 ### Run inference and dump images on a folder of images
 
@@ -96,10 +95,10 @@ You should end up seeing images that look like the following:
 Train cityscapes, using HRNet + OCR + multi-scale attention with fine data and mapillary-pretrained model
 ```bash
 > python -m runx.runx scripts/train_cityscapes.yml -i
+```
 
 The first time this command is run, a centroid file has to be built for the dataset. It'll take about 10 minutes. The centroid file is used during training to know how to sample from the dataset in a class-uniform way.
 
-```
 ## Train SOTA default train-val split
 ```bash
 > python -m runx.runx  scripts/train_cityscapes_sota.yml -i
