@@ -1,4 +1,4 @@
-FROM sc-hw-artf.nvidia.com/sw-nvdl-docker/pytorch:19.10-py3
+FROM nvcr.io/nvidia/pytorch:19.10-py3
 
 RUN pip install runx==0.0.6
 RUN pip install numpy
