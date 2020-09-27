@@ -453,7 +453,7 @@ class RandomSizeAndCrop(object):
                 pre_scale = self.pre_size / in_w
             else:
                 pre_scale = self.pre_size / in_h
-            scale_amt * pre_scale
+            scale_amt *= pre_scale
 
         if self.full_size:
             self.crop.size = img.size[1], img.size[0]
