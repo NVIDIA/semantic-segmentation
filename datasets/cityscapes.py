@@ -122,7 +122,6 @@ class Loader(BaseLoader):
         self.root = cfg.DATASET.CITYSCAPES_DIR
         self.id_to_trainid = cityscapes_labels.label2trainid
         self.trainid_to_name = cityscapes_labels.trainId2name
-        self.fine_cities = cities_cv_split(self.root, mode, cfg.DATASET.CV)
         self.fill_colormap()
         img_ext = 'png'
         mask_ext = 'png'
@@ -131,6 +130,7 @@ class Loader(BaseLoader):
         if mode == 'folder':
             self.all_imgs = make_dataset_folder(eval_folder)
         else:
+            self.fine_cities = cities_cv_split(self.root, mode, cfg.DATASET.CV)
             self.all_imgs = self.find_cityscapes_images(
                 self.fine_cities, img_root, mask_root, img_ext, mask_ext)
 
