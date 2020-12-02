@@ -76,7 +76,7 @@ def scale_as(x, y):
     if cfg.OPTIONS.TORCH_VERSION >= 1.5:
         x_scaled = torch.nn.functional.interpolate(
             x, size=y_size, mode='bilinear',
-            align_corners=align_corners, recompute_scale_factor=True)
+            align_corners=align_corners)
     else:
         x_scaled = torch.nn.functional.interpolate(
             x, size=y_size, mode='bilinear',
