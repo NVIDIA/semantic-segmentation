@@ -78,12 +78,13 @@ class FrameLoader(data.Dataset):
 
         # images = [imageio.imread(imfile)[..., :self.chsize] for imfile in input_files]
         images = [cv2.imread(imfile)[..., :self.chsize] for imfile in input_files]
-        input_shape = images[0].shape[:2]
+        
         if self.is_training:
             cropper = StaticRandomCrop(self.crop_size, input_shape)
             images = map(cropper, images)
 
         # Pad images along height and width to fit them evenly into models.
+        input_shape = images[0].shape[:2]
         height, width = input_shape
         if (height % self.stride) != 0:
             padded_height = (height // self.stride + 1) * self.stride
