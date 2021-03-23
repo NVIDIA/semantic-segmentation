@@ -173,9 +173,9 @@ class BaseLoader(data.Dataset):
         if (mask_out):
             mask = self.drop_mask * mask
 
-        mask = mask.copy()
+        mask_copy = mask.copy()
         for k, v in self.id_to_trainid.items():
-            binary_mask = (mask == k) #+ (gtCoarse == k)
+            binary_mask = (mask_copy == k) #+ (gtCoarse == k)
             if ('refinement' in mask_path) and cfg.DROPOUT_COARSE_BOOST_CLASSES != None and v in cfg.DROPOUT_COARSE_BOOST_CLASSES and binary_mask.sum() > 0 and 'vidseq' not in mask_path:
                 binary_mask += (gtCoarse == k)
                 binary_mask[binary_mask >= 1] = 1
