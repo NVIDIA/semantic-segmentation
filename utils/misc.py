@@ -418,7 +418,7 @@ class ImageDumper():
 
 
 def print_evaluate_results(hist, iu, epoch=0, iou_per_scale=None,
-                           log_multiscale_tb=False):
+                           log_multiscale_tb=False, eps=1e-8):
     """
     If single scale:
        just print results for default scale
@@ -455,10 +455,10 @@ def print_evaluate_results(hist, iu, epoch=0, iou_per_scale=None,
 
         total_pixels = hist.sum()
         class_data.append(100 * iu_TP[class_id] / total_pixels)
-        class_data.append(iu_FP[class_id] / iu_TP[class_id])
-        class_data.append(iu_FN[class_id] / iu_TP[class_id])
-        class_data.append(iu_TP[class_id] / (iu_TP[class_id] + iu_FP[class_id]))
-        class_data.append(iu_TP[class_id] / (iu_TP[class_id] + iu_FN[class_id]))
+        class_data.append(100 * iu_FP[class_id] / total_pixels)
+        class_data.append(100 * iu_FN[class_id] / total_pixels)
+        class_data.append(iu_TP[class_id] / (iu_TP[class_id] + iu_FP[class_id] + eps))
+        class_data.append(iu_TP[class_id] / (iu_TP[class_id] + iu_FN[class_id] + eps))
         tabulate_data.append(class_data)
 
         if log_multiscale_tb:
